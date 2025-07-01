@@ -6,14 +6,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from .database import engine
-from .models import user, task  # Import task model
-from .routers import auth, tasks  # Import tasks router
+from .models import user, task, schedule  # Import schedule model
+from .routers import auth, tasks, schedules  # Import schedules router
 
 load_dotenv()
 
 # Create tables
 user.Base.metadata.create_all(bind=engine)
 task.Base.metadata.create_all(bind=engine)
+schedule.Base.metadata.create_all(bind=engine)  # Create schedule table
 
 app = FastAPI(title="AI Task & Schedule Assistant", version="1.0.0")
 
@@ -31,7 +32,8 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router)
-app.include_router(tasks.router)  # Add tasks router
+app.include_router(tasks.router)
+app.include_router(schedules.router)  # Add schedules router
 
 @app.get("/")
 def read_root():
